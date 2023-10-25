@@ -1,0 +1,59 @@
+class EnigmaMachine:
+    def __init__(self):
+        self.rotors = ['EKMFLGDQVZNTOWYHXUSPAIBRCJ', 
+                       'AJDKSIRUXBLHWTMCQGZNPYFVOE', 
+                       'BDFHJLCPRTXVZNYEIWGAKMUSQO']
+        self.reflector = 'YRUHQSLDPXNGOKMIEBFZCWVJAT'
+        self.rotor_positions = [0, 0, 0]
+        self.rotor_notches = [16, 4, 21]
+
+    def rotate_rotors(self):
+        self.rotor_positions[0] = (self.rotor_positions[0] + 1) % 26
+        if self.rotor_positions[0] in (self.rotor_notches[0], self.rotor_notches[1]):
+            self.rotor_positions[1] = (self.rotor_positions[1] + 1) % 26
+            if self.rotor_positions[1] == self.rotor_notches[1]:
+                self.rotor_positions[2] = (self.rotor_positions[2] + 1) % 26
+    
+    def substitute(self, char, rotor):
+        char_index = ord(char) - ord('A')
+        substitution = self.rotors[rotor][(char_index + self.rotor_positions[rotor]) % 26]
+        return substitution
+    
+    def reflect(self, char):
+        char_index = ord(char) - ord('A')
+        reflected_char = self.reflector[char_index]
+        return reflected_char
+    
+    def encrypt(self, char):
+        self.rotate_rotors()
+        encrypted_char = char
+        for i in range(2, -1, -1):
+            encrypted_char = self.substitute(encrypted_char, i)
+        encrypted_char = self.reflect(encrypted_char)
+        for i in range(3):
+            encrypted_char = self.substitute(encrypted_char, i)
+        return encrypted_char
+    
+    def decrypt(self, char):
+        for i in range(3):
+            char = self.substitute(char, i)
+        char = self.reflect(char)
+        for i in range(2, -1, -1):
+            char = self.substitute(char, i)
+        return char
+
+def main():
+    enigma = EnigmaMachine()
+
+    # Enkripsi
+    plaintext = input("Masukkan teks yang ingin dienkripsi: ")
+    encrypted_text = "".join(enigma.encrypt(char.upper()) for char in plaintext if char.isalpha())
+    print("Teks terenkripsi:", encrypted_text)
+
+    # Dekripsi
+    encrypted_text = input("Masukkan teks yang ingin didekripsi: ")
+    decrypted_text = "".join(enigma.decrypt(char.upper()) for char in encrypted_text if char.isalpha())
+    print("Teks terdekripsi:", decrypted_text)
+
+if __name__ == "__main__":
+    main()
