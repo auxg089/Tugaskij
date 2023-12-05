@@ -1,0 +1,39 @@
+def encrypt_vigenere(plain_text, key):
+    encrypted_text = ''
+    key_index = 0
+
+    for char in plain_text:
+        # Gunakan XOR untuk mengenkripsi karakter
+        encrypted_char = chr(ord(char) ^ ord(key[key_index]))
+        encrypted_text += encrypted_char
+
+        # Pindah ke karakter kunci berikutnya
+        key_index = (key_index + 1) % len(key)
+
+    return encrypted_text
+
+def decrypt_vigenere(encrypted_text, key):
+    decrypted_text = ''
+    key_index = 0
+
+    for char in encrypted_text:
+        # Gunakan XOR untuk mendekripsi karakter
+        decrypted_char = chr(ord(char) ^ ord(key[key_index]))
+        decrypted_text += decrypted_char
+
+        # Pindah ke karakter kunci berikutnya
+        key_index = (key_index + 1) % len(key)
+
+    return decrypted_text
+
+# Contoh penggunaan
+plaintext = "HelloWorld"
+key = "KEY"
+
+# Enkripsi
+encrypted_text = encrypt_vigenere(plaintext, key)
+print(f'Encrypted Text: {encrypted_text}')
+
+# Dekripsi
+decrypted_text = decrypt_vigenere(encrypted_text, key)
+print(f'Decrypted Text: {decrypted_text}')
